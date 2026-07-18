@@ -1,22 +1,33 @@
-# kube-memory
-
-**Organizational memory for DevOps agents.**
-
-kube-memory gives AI coding assistants and CI pipelines a persistent, queryable record of your infrastructure history — incidents, fixes, deployments, and outcomes — so the next failure starts with context instead of a blank slate.
-
-Every episode follows a simple loop: detect a symptom, diagnose the cause, apply a treatment, and remember the outcome. Over time, your cluster builds institutional memory that survives session resets, engineer handoffs, and repeat outages.
+<div align="center">
+  <img src="client/public/logo.png" alt="kube-memory logo" width="150" />
+  <h1>kube-memory</h1>
+  <p><b>Organizational memory for DevOps agents.</b></p>
+  <p>
+    <a href="https://github.com/RagavRida/kube-memory/issues"><img src="https://img.shields.io/github/issues/RagavRida/kube-memory?style=flat-square&color=blue" alt="Issues" /></a>
+    <a href="https://github.com/RagavRida/kube-memory/pulls"><img src="https://img.shields.io/github/issues-pr/RagavRida/kube-memory?style=flat-square&color=green" alt="Pull Requests" /></a>
+  </p>
+  <p>
+    kube-memory gives AI coding assistants and CI pipelines a persistent, queryable record of your infrastructure history — incidents, fixes, deployments, and outcomes — so the next failure starts with context instead of a blank slate.
+  </p>
+</div>
 
 ---
 
-## Links
+## 🔁 The Episode Loop
+
+Every episode follows a simple loop: **detect** a symptom, **diagnose** the cause, **apply** a treatment, and **remember** the outcome. Over time, your cluster builds institutional memory that survives session resets, engineer handoffs, and repeat outages.
+
+---
+
+## 🔗 Quick Links
 
 | Surface | URL | Purpose |
 |---------|-----|---------|
-| **Dashboard (client)** | [http://localhost:5173/](http://localhost:5173/) | Sign up, connect integrations, manage API keys, IDE setup |
-| **API server** | [http://localhost:3000/](http://localhost:3000/) | MCP (`POST /mcp`), REST (`/ingest`, `/memory/query`, `/status`), health |
-| **Youtube Demo** | [Youtube](https://www.youtube.com/watch?v=-gbFnKiNeRI) | |
+| 🖥️ **Dashboard (client)** | [http://localhost:5173/](http://localhost:5173/) | Sign up, connect integrations, manage API keys, IDE setup |
+| ⚙️ **API server** | [http://localhost:3000/](http://localhost:3000/) | MCP (`POST /mcp`), REST (`/ingest`, `/memory/query`, `/status`), health |
+| 📺 **Youtube Demo** | [Watch Video](https://www.youtube.com/watch?v=-gbFnKiNeRI) | See kube-memory in action |
 
-**MCP endpoint for IDE config:** `http://localhost:3000/mcp`
+> **MCP endpoint for IDE config:** `http://localhost:3000/mcp`
 
 ```json
 {
@@ -31,14 +42,13 @@ Every episode follows a simple loop: detect a symptom, diagnose the cause, apply
 }
 ```
 
-Issue the `km_*` key from the local dashboard → **API Keys**.
+*Issue the `km_*` key from the local dashboard → **API Keys**.*
 
 ---
 
-## What kube-memory offers
+## ✨ What kube-memory offers
 
-### Semantic memory for agents
-
+### 🧠 Semantic memory for agents
 Store and retrieve DevOps episodes through semantic search powered by [Cognee](https://www.cognee.ai/). Before acting on an alert or deploy, agents ask *"have we seen this before, and what fixed it?"* After resolving an incident, the outcome is written back for the next time.
 
 | Tool | What it does |
@@ -48,28 +58,24 @@ Store and retrieve DevOps episodes through semantic search powered by [Cognee](h
 | `memory_forget` | Remove stale or sensitive entries (admin) |
 | `predict_risk` | Score a planned deploy against similar past failures before you ship |
 
-### MCP-native — one endpoint, every integration
-
+### 🔌 MCP-native — one endpoint, every integration
 Connect Cursor, VS Code, Claude Desktop, or any MCP-compatible client to `http://localhost:3000/mcp`. One `km_*` API key unlocks the MCP tool surface across memory, platform status, and live infrastructure readouts — scoped per workspace, gated by connector configuration in the dashboard.
 
-### Workspace dashboard
-
+### 🎛️ Workspace dashboard
 Manage everything from the local dashboard:
-
 1. **Sign up** — email/password or GitHub OAuth
 2. **Integrations** — connect Kubernetes, GitHub, Slack, PagerDuty, Prometheus, ArgoCD, or Google Cloud (test → save → enable)
 3. **API Keys** — issue `km_*` keys for IDE and automation (requires ≥1 integration)
 4. **IDE setup** — copy the MCP snippet from the API Keys page
 
-Each workspace is isolated: its own Cognee memory dataset, encrypted connector credentials, and role-scoped API keys (`reader`, `admin`).
+*Each workspace is isolated: its own Cognee memory dataset, encrypted connector credentials, and role-scoped API keys (`reader`, `admin`).*
 
-### REST API for automation
-
+### 🤖 REST API for automation
 The same memory graph agents use in the IDE is available at `http://localhost:3000` for pipelines and cron jobs — ingest structured episodes, run semantic queries, and check workspace status. Full reference: [server/API_DOC.md](./server/API_DOC.md).
 
 ---
 
-## How we use Cognee in kube-memory
+## 🧠 How we use Cognee in kube-memory
 
 Cognee is the memory layer behind the product. kube-memory stores incidents, deploy outcomes, remediation notes, and runbooks as reusable episodes, then uses semantic recall to surface the most relevant past failures before a new deploy or incident response.
 
@@ -79,22 +85,22 @@ In practice, Cognee powers the `memory_recall`, `memory_remember`, and `predict_
 
 ---
 
-## How to get started
+## 🚀 How to get started
 
 1. Open the dashboard → [http://localhost:5173/](http://localhost:5173/)
 2. Complete the setup journey: **Integrations → API Keys → IDE**
 3. Add kube-memory to your MCP config — endpoint `http://localhost:3000/mcp`, key from the dashboard
 4. Ask your agent to recall past incidents, pull pod logs, check ArgoCD sync status, or score deploy risk
 
-Detailed walkthrough: [docs/mcp-tools.md](./docs/mcp-tools.md) · Interactive catalog: [dashboard Documentation](http://localhost:5173/docs)
+> Detailed walkthrough: [docs/mcp-tools.md](./docs/mcp-tools.md) · Interactive catalog: [dashboard Documentation](http://localhost:5173/docs)
 
 ---
 
-## Deploy command (`/kube-deploy`)
+## ⚡ Deploy command (`/kube-deploy`)
 
 One Cursor slash command runs the full **deploy → monitor → incident → fix PR → replay → resolve** loop via the **`kube_deploy`** MCP orchestrator.
 
-```
+```bash
 /kube-deploy @demos/payment-service/k8s/payment-service-canary.yaml stableManifest=@demos/payment-service/k8s/payment-service-canary-fixed.yaml
 ```
 
@@ -102,18 +108,18 @@ One Cursor slash command runs the full **deploy → monitor → incident → fix
 - **Setup:** `./demos/payment-service/scripts/demo-setup.sh`
 - **Docs:** [docs/demo-kube-deploy.md](./docs/demo-kube-deploy.md) · [docs/mcp-tools.md](./docs/mcp-tools.md)
 
-Requires admin `km_*` key, Kubernetes + Slack connectors; GitHub write PAT for automated fix PRs.
+*Requires admin `km_*` key, Kubernetes + Slack connectors; GitHub write PAT for automated fix PRs.*
 
-**Cursor command vs MCP:** `/kube-deploy` lives in [`.cursor/commands/`](.cursor/commands/) — it instructs the agent how to call the `kube_deploy` tool. The tool is on the MCP server; the slash command is optional repo sugar for demos.
+> **Cursor command vs MCP:** `/kube-deploy` lives in [`.cursor/commands/`](.cursor/commands/) — it instructs the agent how to call the `kube_deploy` tool. The tool is on the MCP server; the slash command is optional repo sugar for demos.
 
 ---
 
-## MCP tool catalog
+## 🛠️ MCP tool catalog
 
 Tools are invoked via `POST http://localhost:3000/mcp` with your workspace API key. Availability depends on which integrations you have enabled.
 
 <details>
-<summary>Memory</summary>
+<summary>🧠 <b>Memory</b></summary>
 
 | Tool | Access | Description |
 |------|--------|-------------|
@@ -126,7 +132,7 @@ Tools are invoked via `POST http://localhost:3000/mcp` with your workspace API k
 </details>
 
 <details>
-<summary>Kubernetes</summary>
+<summary>☸️ <b>Kubernetes</b></summary>
 
 | Tool | Access | Description |
 |------|--------|-------------|
@@ -145,7 +151,7 @@ Tools are invoked via `POST http://localhost:3000/mcp` with your workspace API k
 </details>
 
 <details>
-<summary>GitHub</summary>
+<summary>🐙 <b>GitHub</b></summary>
 
 | Tool | Access | Description |
 |------|--------|-------------|
@@ -163,7 +169,7 @@ Tools are invoked via `POST http://localhost:3000/mcp` with your workspace API k
 </details>
 
 <details>
-<summary>Slack</summary>
+<summary>💬 <b>Slack</b></summary>
 
 | Tool | Access | Description |
 |------|--------|-------------|
@@ -177,7 +183,7 @@ Tools are invoked via `POST http://localhost:3000/mcp` with your workspace API k
 </details>
 
 <details>
-<summary>PagerDuty</summary>
+<summary>🚨 <b>PagerDuty</b></summary>
 
 | Tool | Access | Description |
 |------|--------|-------------|
@@ -192,7 +198,7 @@ Tools are invoked via `POST http://localhost:3000/mcp` with your workspace API k
 </details>
 
 <details>
-<summary>Prometheus</summary>
+<summary>📈 <b>Prometheus</b></summary>
 
 | Tool | Access | Description |
 |------|--------|-------------|
@@ -208,7 +214,7 @@ Tools are invoked via `POST http://localhost:3000/mcp` with your workspace API k
 </details>
 
 <details>
-<summary>ArgoCD</summary>
+<summary>🦑 <b>ArgoCD</b></summary>
 
 | Tool | Access | Description |
 |------|--------|-------------|
@@ -225,7 +231,7 @@ Tools are invoked via `POST http://localhost:3000/mcp` with your workspace API k
 </details>
 
 <details>
-<summary>Google Cloud</summary>
+<summary>☁️ <b>Google Cloud</b></summary>
 
 | Tool | Access | Description |
 |------|--------|-------------|
@@ -242,7 +248,7 @@ Tools are invoked via `POST http://localhost:3000/mcp` with your workspace API k
 
 ---
 
-## Architecture
+## 🏗️ Architecture
 
 ```mermaid
 flowchart TB
@@ -400,7 +406,7 @@ flowchart TB
   Loop -.->|"agent workflow"| IDE
 ```
 
-### Credentials & surfaces
+### 🔐 Credentials & Surfaces
 
 | Surface | URL | Credential | Used by |
 |---------|-----|------------|---------|
@@ -408,16 +414,16 @@ flowchart TB
 | MCP | [localhost:3000/mcp](http://localhost:3000/mcp) | `km_*` API key | Cursor, VS Code, Claude Desktop |
 | REST | [localhost:3000](http://localhost:3000/) | `km_*` API key | CI pipelines, scripts, automation |
 
-API keys are role-scoped: **reader** tools are read-only; **admin** can write memory, post to Slack, sync/rollback ArgoCD, and forget entries.
+*API keys are role-scoped: **reader** tools are read-only; **admin** can write memory, post to Slack, sync/rollback ArgoCD, and forget entries.*
 
 ---
 
-## Documentation
+## 📚 Documentation
 
 | Document | Description |
 |----------|-------------|
-| [docs/mcp-tools.md](./docs/mcp-tools.md) | MCP tool catalog, workflows, Cursor vs MCP |
-| [docs/demo-kube-deploy.md](./docs/demo-kube-deploy.md) | OOM deploy demo script |
-| [docs/setup.md](./docs/setup.md) | Local development setup |
-| [server/API_DOC.md](./server/API_DOC.md) | Complete REST and MCP API reference |
-| [server/.env.example](./server/.env.example) | Server configuration |
+| 📖 [docs/mcp-tools.md](./docs/mcp-tools.md) | MCP tool catalog, workflows, Cursor vs MCP |
+| 🎬 [docs/demo-kube-deploy.md](./docs/demo-kube-deploy.md) | OOM deploy demo script |
+| 🛠️ [docs/setup.md](./docs/setup.md) | Local development setup |
+| 📑 [server/API_DOC.md](./server/API_DOC.md) | Complete REST and MCP API reference |
+| ⚙️ [server/.env.example](./server/.env.example) | Server configuration |
