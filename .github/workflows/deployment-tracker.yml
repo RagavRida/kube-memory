@@ -1,0 +1,46 @@
+name: Deployment Tracker
+
+on:
+  push:
+    branches: ["**"]
+
+jobs:
+  update-deployments-md:
+    if: >-
+      contains(github.event.head_commit.message, 'deploy:') &&
+      !contains(github.event.head_commit.message, 'deployments.md')
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Update deployments.md
+        run: |
+          FILE=deployments.md
+          COMMIT_SHA=${{ github.sha }}
+
+          if [ ! -f "$FILE" ]; then
+            echo "| Deployment # | Commit SHA |" > $FILE
+            echo "|--------------|------------|" >> $FILE
+          fi
+
+          COUNT=$(($(wc -l < $FILE) - 2 + 1))
+          echo "| $COUNT | $COMMIT_SHA |" >> $FILE
+
+      - name: Commit and push changes
+        run: |
+          git add deployments.md
+          git commit -m "deploy: update deployments.md for ${{ github.sha }}" || echo "No changes to commit"
+          git push

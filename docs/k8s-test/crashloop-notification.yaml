@@ -1,0 +1,14 @@
+# Scenario 2 (optional): CrashLoopBackOff — bad startup command.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: notification-service
+  namespace: kube-memory-test
+  labels:
+    app: notification-service
+    scenario: crashloop
+spec:
+  containers:
+    - name: notifier
+      image: busybox:1.36
+      command: ["/bin/sh", "-c", "echo starting && exit 1"]

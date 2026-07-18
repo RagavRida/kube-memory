@@ -1,0 +1,23 @@
+# Scenario 1: OOMKilled — payment-service simulator exceeds memory limit.
+# Expected: OOMKilled, events mention memory, fix = raise limits.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: payment-simulator
+  namespace: kube-memory-test
+  labels:
+    app: payment-simulator
+    scenario: oom
+spec:
+  restartPolicy: Never
+  containers:
+    - name: payment-api
+      image: polinux/stress
+      args: ["stress", "--vm", "1", "--vm-bytes", "200M", "--timeout", "120s"]
+      resources:
+        requests:
+          memory: "32Mi"
+          cpu: "50m"
+        limits:
+          memory: "64Mi"
+          cpu: "100m"

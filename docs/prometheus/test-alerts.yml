@@ -1,0 +1,57 @@
+groups:
+  - name: kube-memory-test-alerts
+    rules:
+      - alert: TestHighCPU
+        expr: vector(1)
+        for: 0s
+        labels:
+          severity: warning
+          team: platform
+          source: kube-memory-seed
+        annotations:
+          summary: "Test alert: simulated high CPU usage"
+          description: "CPU usage is above 90% on test-instance (seeded for kube-memory demo)"
+
+      - alert: TestPodCrashLooping
+        expr: vector(1)
+        for: 0s
+        labels:
+          severity: critical
+          team: sre
+          source: kube-memory-seed
+        annotations:
+          summary: "Test alert: pod crash looping"
+          description: "Pod payment-api is in CrashLoopBackOff (seeded for kube-memory demo)"
+
+      - alert: TestHighMemory
+        expr: vector(1)
+        for: 0s
+        labels:
+          severity: warning
+          team: platform
+          source: kube-memory-seed
+        annotations:
+          summary: "Test alert: high memory usage"
+          description: "Memory usage exceeded 85% threshold on api-server (seeded for kube-memory demo)"
+
+      - alert: TestDiskSpaceLow
+        expr: vector(1)
+        for: 0s
+        labels:
+          severity: warning
+          team: infra
+          source: kube-memory-seed
+        annotations:
+          summary: "Test alert: disk space low"
+          description: "Disk usage on /var is above 80% (seeded for kube-memory demo)"
+
+      - alert: TestServiceDown
+        expr: vector(1)
+        for: 0s
+        labels:
+          severity: critical
+          team: oncall
+          source: kube-memory-seed
+        annotations:
+          summary: "Test alert: service unreachable"
+          description: "Health check failed for notification-service (seeded for kube-memory demo)"

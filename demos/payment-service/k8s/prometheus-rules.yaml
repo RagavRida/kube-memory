@@ -1,0 +1,29 @@
+# Prometheus alert rules for payment-demo (apply to your Prometheus instance).
+groups:
+  - name: payment-demo-alerts
+    rules:
+      - alert: PaymentServiceOOMKilled
+        expr: |
+          kube_pod_container_status_last_terminated_reason{namespace="payment-demo", reason="OOMKilled", pod=~"payment-service-canary.*"} == 1
+        for: 0m
+        labels:
+          severity: critical
+          team: platform
+          service: payment-service
+          app: payment-service
+        annotations:
+          summary: "payment-service canary OOMKilled"
+          description: "Canary pod exceeded memory limit in payment-demo namespace"
+
+      - alert: OrderApi5xxRate
+        expr: |
+          increase(http_requests_total{route="/api/create-order", status="500"}[1m]) > 0
+        for: 1m
+        labels:
+          severity: warning
+          team: platform
+          service: order-api
+          app: order-api
+        annotations:
+          summary: "order-api returning 500 on create-order"
+          description: "POST /api/create-order failed — payment-service may be unavailable"

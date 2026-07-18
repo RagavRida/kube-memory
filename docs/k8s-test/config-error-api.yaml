@@ -1,0 +1,19 @@
+# Scenario 3 (optional): Configuration Error — missing Secret.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: api-gateway
+  namespace: kube-memory-test
+  labels:
+    app: api-gateway
+    scenario: config-error
+spec:
+  containers:
+    - name: gateway
+      image: nginx:alpine
+      env:
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: api-gateway-secrets
+              key: password

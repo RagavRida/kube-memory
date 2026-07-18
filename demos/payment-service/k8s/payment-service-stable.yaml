@@ -1,0 +1,53 @@
+# Stable payment-service — production traffic target (no memory leak).
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-service-stable
+  namespace: payment-demo
+  labels:
+    app: payment-service
+    version: stable
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: payment-service
+      version: stable
+  template:
+    metadata:
+      labels:
+        app: payment-service
+        version: stable
+        scenario: stable
+    spec:
+      containers:
+        - name: payment-api
+          image: payment-service:stable
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+              name: http
+          env:
+            - name: VERSION
+              value: stable
+            - name: MEMORY_LEAK
+              value: "false"
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "50m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 3
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10

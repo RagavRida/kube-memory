@@ -1,0 +1,54 @@
+# Fixed manifest for payment-service canary — raised memory limits, leak disabled.
+# Used by kube-memory for automated fix PR and mitigation re-apply.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-service-canary
+  namespace: payment-demo
+  labels:
+    app: payment-service
+    version: canary
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: payment-service
+      version: canary
+  template:
+    metadata:
+      labels:
+        app: payment-service
+        version: canary
+        scenario: oom-fixed
+    spec:
+      containers:
+        - name: payment-api
+          image: payment-service:stable
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+              name: http
+          env:
+            - name: VERSION
+              value: canary
+            - name: MEMORY_LEAK
+              value: "false"
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "50m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 3
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10

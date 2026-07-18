@@ -1,0 +1,17 @@
+# Service routes prod traffic to stable by default. Canary is deployed separately for demo.
+apiVersion: v1
+kind: Service
+metadata:
+  name: payment-service
+  namespace: payment-demo
+  labels:
+    app: payment-service
+spec:
+  type: ClusterIP
+  selector:
+    app: payment-service
+    version: stable
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080

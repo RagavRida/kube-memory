@@ -1,0 +1,30 @@
+# Read-only ServiceAccount for kube-memory (recommended for prod / shared clusters).
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kube-memory-reader
+  namespace: kube-memory-test
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: kube-memory-reader
+  namespace: kube-memory-test
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "pods/log", "events"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: kube-memory-reader
+  namespace: kube-memory-test
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: kube-memory-reader
+subjects:
+  - kind: ServiceAccount
+    name: kube-memory-reader
+    namespace: kube-memory-test
